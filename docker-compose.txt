@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  ###> doctrine/doctrine-bundle ###
+  database:
+    image: mysql:5.7.39
+    container_name: jouet_db
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: jouet
+    ports:
+      - 6033:3306
+  # api:
+  #   build:
+  #     context: .
+  #   container_name: quiz_api
+  #   volumes:
+  #     - .:/var/www/html/quiz_api/
+  #   ports:
+  #     - 8001:8000
+  #   entrypoint: sh /var/www/html/quiz_api/docker/start.sh
+  #   depends_on:
+  #     - database
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: jouet_pma
+    environment:
+      PMA_HOST: jouet_db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    ports:
+      - 8081:80
+    depends_on:
+      - database
+  mailer:
+    image: schickling/mailcatcher
+    container_name: jouet_mailer
+    ports: ['1025', '1080:1080']
